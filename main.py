@@ -55,8 +55,6 @@ class MubasherAPI :
 
   def saveToJSON(self):
     try:
-      if not (os.path.exists(self.CompaniesDirectory)):
-        os.mkdir(self.CompaniesDirectory)
       # Convert and write JSON object to file
       with open(self.outputFile, "w") as outfile: 
           json.dump(list(self.dataBase.values()), outfile)
