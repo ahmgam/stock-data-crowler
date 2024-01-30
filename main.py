@@ -75,4 +75,4 @@ class MubasherAPI :
     else:
       return company
 
-MubasherAPI('eg')
+MubasherAPI('eg','/home/runner/work/stock-data-crowler/stock-data-crowler/')
