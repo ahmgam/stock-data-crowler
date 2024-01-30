@@ -59,7 +59,7 @@ class MubasherAPI :
     try:
       # Convert and write JSON object to file
       with open(self.outputFile, "w") as outfile: 
-          json.dump(list(self.dataBase), outfile)
+          json.dump(self.dataBase, outfile)
     except Exception as e:
       print(f"error : {e.with_traceback()}")
 
