@@ -8,7 +8,7 @@ class MubasherAPI :
     self.CompaniesAPI="/api/1/listed-companies"
     self.PricesAPI = "/api/1/stocks/prices/all"
     self.performanceApi = "/api/1/analysis/performance-comparison/stock?query="
-    self.dataBase = {}
+    self.dataBase = {"data":[],'updated_at':None}
     self.CompaniesDirectory= self._validatePath(path)
     self.country = self._validateCountry(country)
     self.outputFile =f"{self.CompaniesDirectory}{self.country}.json"
@@ -47,8 +47,9 @@ class MubasherAPI :
                       "historical_csv":company_files.get("historicalFile"),
                       "intraday_csv": company_files.get("intradayFile"),
                       "symbol":company["symbol"]}
-        self.dataBase[company["symbol"]]=dataElement
+        self.dataBase["data"].append(dataElement)
       currentPage=currentPage+1
+    self.dataBase["updated_at"]= str(datetime.datetime.now())
     self.saveToJSON()
     
     print("Import complete, saved to : "+ self.outputFile )
@@ -57,7 +58,7 @@ class MubasherAPI :
     try:
       # Convert and write JSON object to file
       with open(self.outputFile, "w") as outfile: 
-          json.dump(list(self.dataBase.values()), outfile)
+          json.dump(list(self.dataBase), outfile)
     except Exception as e:
       print(f"error : {e.with_traceback()}")
 
