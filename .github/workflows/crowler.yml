@@ -1,7 +1,8 @@
 name: Generate and push data.json
 on:
  schedule:
-    - cron: '34 11 * * *'
+    - cron: '0 7 * * *'
+ workflow_dispatch:
 jobs:
  build:
     runs-on: ubuntu-latest
