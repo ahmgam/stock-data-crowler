@@ -9,12 +9,17 @@ class MubasherAPI :
     self.PricesAPI = "/api/1/stocks/prices/all"
     self.performanceApi = "/api/1/analysis/performance-comparison/stock?query="
     self.dataBase = {}
-    self.CompaniesDirectory= path
+    self.CompaniesDirectory= self._validatePath(path)
     self.country = self._validateCountry(country)
-    self.outputFile =f"{path}/{self.country}.json"
+    self.outputFile =f"{self.CompaniesDirectory}{self.country}.json"
     self._GetCompanies()
     
-
+  def _validatePath(self,path):
+    if path == "":
+      return ""
+    if not str(path).endswith("/"):
+      return path+"/"
+      
   def _validateCountry(self,country):
     if not country in ["eg","sa","ae","qa","bh","om","kw","jo","tn","ma","ps","iq"]:
       raise ValueError("wrong country code, please use listCountries to see available country codes")
