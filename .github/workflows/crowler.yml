@@ -19,7 +19,7 @@ jobs:
         run: python main.py
 
       - name: Commit and push changes
-        uses: ahmgam/stock-data-crowler@master
+        uses: ad-m/github-push-action@master@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: 'main'
