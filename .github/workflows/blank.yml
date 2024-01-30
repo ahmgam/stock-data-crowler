@@ -1,0 +1,24 @@
+name: Generate and push data.json
+on:
+ schedule:
+    - cron: '0 9 * * *'
+jobs:
+ build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Run Python file
+        run: python main.py
+
+      - name: Commit and push changes
+        uses: ahmgam/stock-data-crowler@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: 'main'
