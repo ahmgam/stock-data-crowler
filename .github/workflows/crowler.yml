@@ -19,6 +19,13 @@ jobs:
           pip install -r requirements.txt
       - name: Run Python file
         run: python main.py
+      - name: Auto commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: 'Automated commit'
+          branch: 'main'
+          # The path to the directory you want to commit
+          file_pattern: '*'
       - name: Commit and push changes
         uses: ad-m/github-push-action@master
         with:
