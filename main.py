@@ -18,7 +18,8 @@ class MubasherAPI :
     if path == "":
       return ""
     if not str(path).endswith("/"):
-      return path+"/"
+      path = path+"/"
+    return path
       
   def _validateCountry(self,country):
     if not country in ["eg","sa","ae","qa","bh","om","kw","jo","tn","ma","ps","iq"]:
