@@ -54,11 +54,14 @@ class MubasherAPI :
     print("Import complete, saved to : "+ self.outputFile )
 
   def saveToJSON(self):
-    if not (os.path.exists(self.CompaniesDirectory)):
-      os.mkdir(self.CompaniesDirectory)
-    # Convert and write JSON object to file
-    with open(self.outputFile, "w") as outfile: 
-        json.dump(list(self.dataBase.values()), outfile)
+    try:
+      if not (os.path.exists(self.CompaniesDirectory)):
+        os.mkdir(self.CompaniesDirectory)
+      # Convert and write JSON object to file
+      with open(self.outputFile, "w") as outfile: 
+          json.dump(list(self.dataBase.values()), outfile)
+    except Exception as e:
+      print(f"error : {e.with_traceback()}")
 
   def getHistoricalFileWithApi(self,symbol):
     company_data = requests.get(f"{self.HostURL}{self.performanceApi}{symbol}").json()
