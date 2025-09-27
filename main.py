@@ -1,28 +1,49 @@
-import requests
 import datetime
-import os
 import json
-class MubasherAPI :
-  def __init__ (self,country,path=""):
-    self.HostURL= "http://www.mubasher.info"
-    self.CompaniesAPI="/api/1/listed-companies"
+import os
+from pathlib import Path
+
+import requests
+
+
+SUPPORTED_COUNTRIES = [
+    "eg",
+    "sa",
+    "ae",
+    "qa",
+    "bh",
+    "om",
+    "kw",
+    "jo",
+    "tn",
+    "ma",
+    "ps",
+    "iq",
+]
+
+
+class MubasherAPI:
+  def __init__(self, country, path=None):
+    self.HostURL = "http://www.mubasher.info"
+    self.CompaniesAPI = "/api/1/listed-companies"
     self.PricesAPI = "/api/1/stocks/prices/all"
     self.performanceApi = "/api/1/analysis/performance-comparison/stock?query="
-    self.dataBase = {"data":[],'updated_at':None}
-    self.CompaniesDirectory= self._validatePath(path)
+    self.dataBase = {"data": [], "updated_at": None}
+    self.CompaniesDirectory = self._prepare_directory(path)
     self.country = self._validateCountry(country)
-    self.outputFile =f"{self.CompaniesDirectory}{self.country}.json"
+    self.outputFile = self.CompaniesDirectory / f"{self.country}.json"
     self._GetCompanies()
-    
-  def _validatePath(self,path):
-    if path == "":
-      return ""
-    if not str(path).endswith("/"):
-      path = path+"/"
-    return path
-      
-  def _validateCountry(self,country):
-    if not country in ["eg","sa","ae","qa","bh","om","kw","jo","tn","ma","ps","iq"]:
+
+  def _prepare_directory(self, path):
+    if path:
+      directory = Path(path).expanduser()
+    else:
+      directory = Path(__file__).resolve().parent / "data"
+    directory.mkdir(parents=True, exist_ok=True)
+    return directory
+
+  def _validateCountry(self, country):
+    if country not in SUPPORTED_COUNTRIES:
       raise ValueError("wrong country code, please use listCountries to see available country codes")
     return country
 
@@ -52,14 +73,14 @@ class MubasherAPI :
       currentPage=currentPage+1
     self.dataBase["updated_at"]= str(datetime.datetime.now())
     self.saveToJSON()
-    
-    print("Import complete, saved to : "+ self.outputFile )
+
+    print("Import complete, saved to : " + str(self.outputFile))
 
   def saveToJSON(self):
     try:
       # Convert and write JSON object to file
-      with open(self.outputFile, "w") as outfile: 
-          json.dump(self.dataBase, outfile)
+      with open(self.outputFile, "w", encoding="utf-8") as outfile:
+        json.dump(self.dataBase, outfile)
     except Exception as e:
       print(f"error : {e.with_traceback()}")
 
@@ -75,4 +96,13 @@ class MubasherAPI :
     else:
       return company
 
-MubasherAPI('eg','/home/runner/work/stock-data-crowler/stock-data-crowler/')
+
+def fetch_all_countries(path=None):
+  for country_code in SUPPORTED_COUNTRIES:
+    print(f"Fetching data for {country_code}...")
+    MubasherAPI(country_code, path=path)
+
+
+if __name__ == "__main__":
+  custom_path = os.environ.get("MUBASHER_DATA_DIR")
+  fetch_all_countries(path=custom_path)
